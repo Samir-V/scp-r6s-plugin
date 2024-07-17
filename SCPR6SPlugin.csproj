@@ -89,6 +89,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ClientCommandFuze.cs" />
     <Compile Include="Config.cs" />
     <Compile Include="PlayerHandler.cs" />
     <Compile Include="SCPR6SPlugin.cs" />

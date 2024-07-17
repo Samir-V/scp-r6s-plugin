@@ -27,16 +27,27 @@ namespace SCPR6SPlugin
 
         public override PluginPriority Priority { get; } = PluginPriority.Default;
 
-        public override System.Version Version { get; } = new System.Version(1, 0, 1);
+        public override System.Version Version { get; } = new System.Version(1, 0, 2);
+
+        public List<int> KapkanID { get; set; }
+
+        public List<int> FuzeID { get; set; }
 
         public override void OnEnabled()
         {
+            KapkanID = new List<int>();
+            FuzeID = new List<int>();
+
             RegisterEvents();
             base.OnEnabled();
         }
 
         public override void OnDisabled()
         {
+
+            KapkanID.Clear();
+            FuzeID.Clear();
+
             UnregisterEvents();
             base.OnDisabled();
         }
