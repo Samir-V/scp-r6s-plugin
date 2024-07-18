@@ -1,13 +1,10 @@
 ﻿using AdminToys;
 using CommandSystem;
 using Exiled.API.Features;
-using Exiled.API.Features.Items;
+using Exiled.API.Features.Doors;
 using Exiled.API.Features.Toys;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 using UnityEngine;
 
 namespace SCPR6SPlugin
@@ -37,9 +34,18 @@ namespace SCPR6SPlugin
                 return false;
             }
 
-            Primitive.Create(UnityEngine.PrimitiveType.Cube, PrimitiveFlags.Visible, player.Position, null, new Vector3(10, 10, 10), true, null);
+            Door door = Door.GetClosest(player.Position, out float distance);
+
+            if (distance > 1.5 || !door.IsFullyClosed)
+            {
+                response = "Вы слишком далеко от подходящей двери.";
+                return false;
+            }
+
+            Primitive charge = Primitive.Create(UnityEngine.PrimitiveType.Cube, PrimitiveFlags.Visible, player.Position, null, new Vector3(1, 1, 1), true, null);
 
             response = "Успех!";
+
             return true;
         }
     }
