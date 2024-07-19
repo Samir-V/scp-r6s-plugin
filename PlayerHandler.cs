@@ -24,6 +24,8 @@ namespace SCPR6SPlugin
                 if (ev.Player.Id == SCPR6SPlugin.Instance.FuzeID[index])
                 {
                     SCPR6SPlugin.Instance.FuzeID.Clear();
+                    SCPR6SPlugin.Instance.FuzeCurrentCharges = SCPR6SPlugin.PluginConfig.FuzeCharges;
+                    SCPR6SPlugin.Instance.FuzeCraftCount = 0;
                     break;
                 }
             }

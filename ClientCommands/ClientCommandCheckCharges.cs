@@ -3,25 +3,30 @@ using CommandSystem;
 using Exiled.API.Features;
 using Exiled.API.Features.Doors;
 using Exiled.API.Features.Toys;
+using MEC;
 using System;
-
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using UnityEngine;
 
 namespace SCPR6SPlugin
 {
     [CommandHandler(typeof(ClientCommandHandler))]
-    internal class ClientCommandFuze : ICommand
+    internal class ClientCommandCheckCharges : ICommand
     {
-        public string Command { get; } = "fuze";
+        public string Command { get; } = "checkcharges";
 
         /// <inheritdoc/>
         public string[] Aliases { get; } = new string[0];
 
         /// <inheritdoc/>
-        public string Description { get; } = "test";
+        public string Description { get; } = "Проверка оставшегося количества зарядов";
 
         /// <inheritdoc />
         public bool SanitizeResponse { get; }
+
 
         /// <inheritdoc/>
         public bool Execute(ArraySegment<string> arguments, ICommandSender sender, out string response)
@@ -34,18 +39,7 @@ namespace SCPR6SPlugin
                 return false;
             }
 
-            Door door = Door.GetClosest(player.Position, out float distance);
-
-            if (distance > 1.5 || !door.IsFullyClosed)
-            {
-                response = "Вы слишком далеко от подходящей двери.";
-                return false;
-            }
-
-            Primitive charge = Primitive.Create(UnityEngine.PrimitiveType.Cube, PrimitiveFlags.Visible, player.Position, null, new Vector3(1, 1, 1), true, null);
-
-            response = "Успех!";
-
+            response = $"Оставшееся количество зарядов - {SCPR6SPlugin.Instance.FuzeCurrentCharges}";
             return true;
         }
     }

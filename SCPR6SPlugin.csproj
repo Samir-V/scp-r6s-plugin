@@ -89,11 +89,14 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ClientCommandFuze.cs" />
+    <Compile Include="ClientCommands\ClientCommandCheckCharges.cs" />
+    <Compile Include="ClientCommands\ClientCommandCraftCharge.cs" />
+    <Compile Include="ClientCommands\ClientCommandFuze.cs" />
     <Compile Include="Config.cs" />
     <Compile Include="PlayerHandler.cs" />
     <Compile Include="SCPR6SPlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

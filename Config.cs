@@ -18,5 +18,8 @@ namespace SCPR6SPlugin
 
         [Description("Шанс спавна Фьюза 0.0 = 0% -- 1.0 = 100%")]
         public double FuzeChance { get; set; } = 0.7;
+
+        [Description("Изначальное количество зарядов у Фьюза")]
+        public int FuzeCharges { get; set; } = 3;
     }
 }

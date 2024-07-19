@@ -1,11 +1,14 @@
 ﻿using Exiled.API.Enums;
 using Exiled.API.Features;
+using Exiled.API.Features.Doors;
 using InventorySystem.Items.Usables;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UnityEngine;
 
 namespace SCPR6SPlugin
 {
@@ -27,16 +30,22 @@ namespace SCPR6SPlugin
 
         public override PluginPriority Priority { get; } = PluginPriority.Default;
 
-        public override System.Version Version { get; } = new System.Version(1, 0, 2);
+        public override System.Version Version { get; } = new System.Version(1, 1, 0);
 
         public List<int> KapkanID { get; set; }
 
         public List<int> FuzeID { get; set; }
 
+        public int FuzeCurrentCharges { get; set; }
+
+        public int FuzeCraftCount { get; set; }
+
         public override void OnEnabled()
         {
             KapkanID = new List<int>();
             FuzeID = new List<int>();
+            FuzeCurrentCharges = Instance.Config.FuzeCharges;
+            FuzeCraftCount = 0;
 
             RegisterEvents();
             base.OnEnabled();
