@@ -1,17 +1,19 @@
 ﻿using AdminToys;
 using CommandSystem;
+using Exiled.API.Enums;
 using Exiled.API.Features;
 using Exiled.API.Features.Doors;
+using Exiled.API.Features.Items;
+using Exiled.API.Features.Pickups;
+using Exiled.API.Features.Pickups.Projectiles;
 using Exiled.API.Features.Toys;
+using Exiled.CustomItems.API.Features;
+using InventorySystem.Items.ThrowableProjectiles;
 using MEC;
-using Mono.Cecil;
+using PlayerRoles.PlayableScps.Scp939.Ripples;
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics.Eventing.Reader;
-using System.Timers;
 using UnityEngine;
-using UnityEngine.Rendering;
 
 namespace SCPR6SPlugin
 {
@@ -29,17 +31,43 @@ namespace SCPR6SPlugin
         /// <inheritdoc />
         public bool SanitizeResponse { get; }
 
+        Vector3 AlignNearestWorldAxis(Vector3 direction)
+        {
+            float x;
+            float z;
+
+            if (Mathf.Abs(direction.x) > Mathf.Abs(direction.z))
+            {
+                x = Mathf.Sign(direction.x);
+                z = 0;
+            }
+            else
+            {
+                x = 0;
+                z = Mathf.Sign(direction.z);
+            }
+
+            return new Vector3(x, 0, z).normalized;
+        }
+
         private IEnumerator<float> ActivationTimeCheck(Player fuzePlayer, Door fuzeDoor)
         {
             var fuzeStartPos = fuzePlayer.Position;
             var fuzeStartRot = fuzePlayer.Rotation;
+
+            Vector3 fuzeForwardNorm = fuzePlayer.Transform.forward.normalized;
+
+            Vector3 directionAlignedWorld = AlignNearestWorldAxis(fuzeForwardNorm);
+
+            Log.Info(directionAlignedWorld.x);
+            Log.Info(directionAlignedWorld.z);
 
             for (var time = 0; time < 5; ++time)
             {
                 var distance = Vector3.Distance(fuzeStartPos, fuzePlayer.Position);
                 var angleDiff = Quaternion.Angle(fuzeStartRot, fuzePlayer.Rotation);
 
-                if (distance < 1.2f && fuzeDoor.IsFullyClosed && angleDiff < 20.0f)
+                if (distance < 1.2f && fuzeDoor.IsFullyClosed && angleDiff < 30.0f)
                 {
                     yield return Timing.WaitForSeconds(1.0f);
                     fuzePlayer.Broadcast(1, $"Установка завершена на {(time + 1) * 20}%");
@@ -60,12 +88,24 @@ namespace SCPR6SPlugin
 
             fuzePlayer.ShowHint("Заряд установлен", 3f);
 
-            //for (var time = 0; time < 2; ++time)
-            //{
-            //    yield return Timing.WaitForSeconds(1.0f);
-            //}
+            yield return Timing.WaitForSeconds(2.0f);
 
-            //charge.Destroy();
+            for (var time = 0; time < 6; ++time)
+            {
+                Exiled.API.Features.Pickups.Pickup.CreateAndSpawn(ItemType.GrenadeHE, charge.Base.transform.position + directionAlignedWorld, Quaternion.LookRotation(directionAlignedWorld));
+                yield return Timing.WaitForSeconds(0.5f);
+            }
+
+            yield return Timing.WaitForSeconds(1.0f);
+
+            charge.Destroy();
+
+            //ThrowRequest.FullForceThrow;
+
+            //GrenadePickup grenade = new GrenadePickup.Create(ItemType.GrenadeHE);
+            
+            //= new EffectGrenadeProjectile.CreateAndSpawn(ProjectileType.FragGrenade, charge.Position, fuzeStartRot);
+            
         }
 
         /// <inheritdoc/>
@@ -93,7 +133,7 @@ namespace SCPR6SPlugin
                 return false;
             }
 
-            bool RayHit = Physics.Raycast(player.CameraTransform.position, player.CameraTransform.forward, 1);
+            bool RayHit = Physics.Raycast(player.CameraTransform.position, player.CameraTransform.forward, 0.6f);
 
             if (distance > 1.2f || !door.IsFullyClosed || !RayHit)
             {
