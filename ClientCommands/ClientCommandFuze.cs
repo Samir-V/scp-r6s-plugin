@@ -7,6 +7,7 @@ using Exiled.API.Features.Items;
 using Exiled.API.Features.Pickups;
 using Exiled.API.Features.Pickups.Projectiles;
 using Exiled.API.Features.Toys;
+using Exiled.API.Structs;
 using Exiled.CustomItems.API.Features;
 using InventorySystem.Items.ThrowableProjectiles;
 using MEC;
@@ -90,9 +91,22 @@ namespace SCPR6SPlugin
 
             yield return Timing.WaitForSeconds(2.0f);
 
+            //var grenade = (ExplosiveGrenade)Item.Create(ItemType.GrenadeHE);
+
+            //grenade.Throw(true);
+
+            //grenade.SpawnActive(charge.Base.transform.position + directionAlignedWorld);
+
+            //grenade.Base.ServerThrow(300, 2, Vector3.zero, directionAlignedWorld * 300);
+
             for (var time = 0; time < 6; ++time)
             {
-                Exiled.API.Features.Pickups.Pickup.CreateAndSpawn(ItemType.GrenadeHE, charge.Base.transform.position + directionAlignedWorld, Quaternion.LookRotation(directionAlignedWorld));
+                var grenade = (ExplosiveGrenade)Item.Create(ItemType.GrenadeHE);
+
+                grenade.SpawnActive(charge.Base.transform.position + directionAlignedWorld);
+
+                //grenade.Base.ServerThrow(300, 2, Vector3.zero, directionAlignedWorld * 300);
+
                 yield return Timing.WaitForSeconds(0.5f);
             }
 

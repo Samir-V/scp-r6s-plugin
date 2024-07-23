@@ -22,7 +22,7 @@ namespace SCPR6SPlugin
 
         public override PluginPriority Priority { get; } = PluginPriority.Default;
 
-        public override System.Version Version { get; } = new System.Version(1, 1, 0);
+        public override System.Version Version { get; } = new System.Version(1, 1, 1);
 
         public List<int> KapkanID { get; set; }
 
