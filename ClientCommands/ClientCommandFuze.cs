@@ -91,21 +91,48 @@ namespace SCPR6SPlugin
 
             yield return Timing.WaitForSeconds(2.0f);
 
-            //var grenade = (ExplosiveGrenade)Item.Create(ItemType.GrenadeHE);
-
-            //grenade.Throw(true);
-
-            //grenade.SpawnActive(charge.Base.transform.position + directionAlignedWorld);
-
-            //grenade.Base.ServerThrow(300, 2, Vector3.zero, directionAlignedWorld * 300);
-
             for (var time = 0; time < 6; ++time)
             {
+                int randomDistance = UnityEngine.Random.Range(6, 13);
+
+                Vector3 grenadeDir = directionAlignedWorld * randomDistance;
+
+                if (grenadeDir.x != 0)
+                {
+                    int randomInt = UnityEngine.Random.Range(0, 3);
+
+                    switch (randomInt)
+                    {
+                        case 0:
+                            grenadeDir.z += 0.5f;
+                            break;
+                        case 1:
+                            grenadeDir.z -= 0.5f;
+                            break;
+                        default:
+                            break;
+                    }
+                }
+                else if (grenadeDir.z != 0)
+                {
+                    int randomInt = UnityEngine.Random.Range(0, 3);
+
+                    switch (randomInt)
+                    {
+                        case 0:
+                            grenadeDir.x += 0.5f;
+                            break;
+                        case 1:
+                            grenadeDir.x -= 0.5f;
+                            break;
+                        default:
+                            break;
+                    }
+                }
+
                 var grenade = (ExplosiveGrenade)Item.Create(ItemType.GrenadeHE);
 
-                grenade.SpawnActive(charge.Base.transform.position + directionAlignedWorld);
-
-                //grenade.Base.ServerThrow(300, 2, Vector3.zero, directionAlignedWorld * 300);
+                grenade.SpawnActive(charge.Base.transform.position + grenadeDir);
 
                 yield return Timing.WaitForSeconds(0.5f);
             }
@@ -113,12 +140,6 @@ namespace SCPR6SPlugin
             yield return Timing.WaitForSeconds(1.0f);
 
             charge.Destroy();
-
-            //ThrowRequest.FullForceThrow;
-
-            //GrenadePickup grenade = new GrenadePickup.Create(ItemType.GrenadeHE);
-            
-            //= new EffectGrenadeProjectile.CreateAndSpawn(ProjectileType.FragGrenade, charge.Position, fuzeStartRot);
             
         }
 

@@ -2,13 +2,13 @@
 using CommandSystem;
 using Exiled.API.Features;
 using Exiled.API.Features.Doors;
+using Exiled.API.Features.Items;
+using Exiled.API.Features.Pickups;
 using Exiled.API.Features.Toys;
+using InventorySystem.Items.ThrowableProjectiles;
 using MEC;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 
 namespace SCPR6SPlugin
@@ -54,8 +54,8 @@ namespace SCPR6SPlugin
 
             Vector3 directionAlignedWorld = AlignNearestWorldAxis(kapkanForwardNorm);
 
-            Log.Info(directionAlignedWorld.x);
-            Log.Info(directionAlignedWorld.z);
+            //Log.Info(directionAlignedWorld.x);
+            //Log.Info(directionAlignedWorld.z);
 
             for (var time = 0; time < 3; ++time)
             {
@@ -79,30 +79,71 @@ namespace SCPR6SPlugin
 
             if (directionAlignedWorld.x > 0)
             {
-                Vector3 kapkanPos = new Vector3(kapkanDoor.Position.x - directionAlignedWorld.x * 0.25f, kapkanDoor.Position.y + 0.2f, kapkanDoor.Position.z + 0.4f);
+                Vector3 kapkanPos = new Vector3(kapkanDoor.Position.x - directionAlignedWorld.x * 0.25f, kapkanDoor.Position.y + 0.2f, kapkanDoor.Position.z + 0.85f);
 
                 trapPos = kapkanPos;
             }
             else if (directionAlignedWorld.x < 0)
             {
-                Vector3 kapkanPos = new Vector3(kapkanDoor.Position.x - directionAlignedWorld.x * 0.25f, kapkanDoor.Position.y + 0.2f, kapkanDoor.Position.z - 0.4f);
+                Vector3 kapkanPos = new Vector3(kapkanDoor.Position.x - directionAlignedWorld.x * 0.25f, kapkanDoor.Position.y + 0.2f, kapkanDoor.Position.z - 0.85f);
 
                 trapPos = kapkanPos;
             }
             else if (directionAlignedWorld.z > 0)
             {
-                Vector3 kapkanPos = new Vector3(kapkanDoor.Position.x - 0.4f, kapkanDoor.Position.y + 0.2f, kapkanDoor.Position.z - directionAlignedWorld.z * 0.25f);
+                Vector3 kapkanPos = new Vector3(kapkanDoor.Position.x - 0.85f, kapkanDoor.Position.y + 0.2f, kapkanDoor.Position.z - directionAlignedWorld.z * 0.25f);
 
                 trapPos = kapkanPos;
             }
             else if (directionAlignedWorld.z < 0)
             {
-                Vector3 kapkanPos = new Vector3(kapkanDoor.Position.x + 0.4f, kapkanDoor.Position.y + 0.2f, kapkanDoor.Position.z - directionAlignedWorld.z * 0.25f);
+                Vector3 kapkanPos = new Vector3(kapkanDoor.Position.x + 0.85f, kapkanDoor.Position.y + 0.2f, kapkanDoor.Position.z - directionAlignedWorld.z * 0.25f);
 
                 trapPos = kapkanPos;
             }
 
             Primitive charge = Primitive.Create(UnityEngine.PrimitiveType.Cube, PrimitiveFlags.Visible, trapPos, null, new Vector3(0.4f, 0.4f, 0.4f), true, null);
+
+            charge.Collidable = true;
+
+            KapkanComponent kapkanComponent = charge.Base.gameObject.AddComponent<KapkanComponent>();
+
+            kapkanComponent.direction = directionAlignedWorld;
+            kapkanComponent.position = charge.Position;
+
+            // --------------
+
+            Vector3 laserPos = new Vector3(kapkanDoor.Position.x, kapkanDoor.Position.y + 0.2f, kapkanDoor.Position.z);
+
+            Primitive chargeLaser = Primitive.Create(UnityEngine.PrimitiveType.Cube, PrimitiveFlags.Visible, laserPos, null, new Vector3(1.1f, 0.4f, 1.1f), true, null);
+
+            chargeLaser.Collidable = false;
+
+            chargeLaser.Visible = false;
+
+            chargeLaser.Base.gameObject.AddComponent<LaserComponent>();
+
+            //Collider laserCollider = chargeLaser.Base.gameObject.GetComponent<Collider>();
+
+            //if (laserCollider == null )
+            //{
+            //    Log.Info("No Collider");
+            //}
+
+            //laserCollider.enabled = true;
+
+            //  laserCollider.isTrigger = true;
+
+            //if (chargeLaser.Base.gameObject.GetComponent<Rigidbody>() == null)
+            //{
+            //    var RigidBodyLaser = chargeLaser.Base.gameObject.AddComponent<Rigidbody>();
+            //    RigidBodyLaser.isKinematic = true;
+            //}
+
+            // --------------
+
+            SCPR6SPlugin.Instance.Kapkans.Add(charge);
+            SCPR6SPlugin.Instance.KapkanLasers.Add(chargeLaser);
 
             var currentItem = kapkanPlayer.CurrentItem;
 

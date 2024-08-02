@@ -17,5 +17,8 @@ namespace SCPR6SPlugin
 
         [Description("Изначальное количество зарядов у Фьюза")]
         public int FuzeCharges { get; set; } = 3;
+
+        [Description("Срабатывает ли ловушка Капкана на союзников?")]
+        public bool KapkanAllyTrigger { get; set; } = false;
     }
 }

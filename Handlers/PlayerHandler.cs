@@ -1,6 +1,9 @@
-﻿using Exiled.Events.EventArgs.Player;
+﻿using Exiled.API.Features;
+using Exiled.API.Features.Components;
+using Exiled.API.Features.Items;
+using Exiled.Events.EventArgs.Player;
 using PlayerRoles;
-
+using UnityEngine;
 
 namespace SCPR6SPlugin
 {
@@ -19,7 +22,7 @@ namespace SCPR6SPlugin
                 }
             }
 
-            for (int index = 0; index < SCPR6SPlugin.Instance.FuzeID.Count; ++index)
+            for (int index = 0; index < SCPR6SPlugin.Instance.FuzeID.Count ; ++index)
             {
                 if (ev.Player.Id == SCPR6SPlugin.Instance.FuzeID[index])
                 {
@@ -56,12 +59,35 @@ namespace SCPR6SPlugin
                 if (chance <= SCPR6SPlugin.PluginConfig.FuzeChance)
                 {
                     SCPR6SPlugin.Instance.FuzeID.Add(ev.Player.Id);
+                }
+            }
+        }
 
-                    ev.Player.ClearInventory();
+        public void OnShooting(ShootingEventArgs ev)
+        {
+            if (Physics.Raycast(ev.Player.CameraTransform.position, ev.Player.CameraTransform.forward, out RaycastHit hitInfo))
+            {
+                KapkanComponent component = hitInfo.collider.GetComponent<KapkanComponent>();
 
-                    for (int index = 0; index < 8; ++index)
+                if (component != null)
+                {
+                    for (int index = 0; index < SCPR6SPlugin.Instance.Kapkans.Count; ++index)
                     {
-                        ev.Player.AddItem(ItemType.GrenadeHE);
+                        if (component == SCPR6SPlugin.Instance.Kapkans[index].Base.gameObject.GetComponent<KapkanComponent>())
+                        {
+                            var grenade = (ExplosiveGrenade)Item.Create(ItemType.GrenadeHE);
+
+                            grenade.FuseTime = 0.1f;
+
+                            grenade.SpawnActive(SCPR6SPlugin.Instance.Kapkans[index].Position);
+
+                            SCPR6SPlugin.Instance.Kapkans[index].Destroy();
+                            KapkanComponent tempKComp = SCPR6SPlugin.Instance.Kapkans[index].Base.GetComponent<KapkanComponent>();
+                            tempKComp.active = false;
+                            SCPR6SPlugin.Instance.Kapkans.RemoveAt(index);
+                            SCPR6SPlugin.Instance.KapkanLasers[index].Destroy();
+                            SCPR6SPlugin.Instance.KapkanLasers.RemoveAt(index); 
+                        }
                     }
                 }
             }
